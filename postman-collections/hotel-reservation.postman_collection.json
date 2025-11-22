@@ -1,0 +1,256 @@
+{
+  "info": {
+    "name": "Hotel Reservation API (4 HUs)",
+    "_postman_id": "b1f6c8b4-0f6f-4b3e-9e1a-bf1a8df3b0c1",
+    "description": "Colección Postman para autenticar, buscar disponibilidad (HU001), crear reservas (HU004), procesar check-in (HU009) y check-out (HU010). Incluye variables y scripts para guardar tokens JWT.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{access_token}}", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8080", "type": "string" },
+    { "key": "access_token", "value": "", "type": "string" },
+    { "key": "refresh_token", "value": "", "type": "string" },
+    { "key": "username", "value": "testuser{{timestamp}}", "type": "string" },
+    { "key": "password", "value": "Test1234", "type": "string" },
+    { "key": "email", "value": "test{{timestamp}}@example.com", "type": "string" },
+    { "key": "roomId", "value": "", "type": "string" },
+    { "key": "reservationId", "value": "", "type": "string" },
+    { "key": "confirmationNumber", "value": "", "type": "string" },
+    { "key": "checkInDate", "value": "2025-12-01", "type": "string" },
+    { "key": "checkOutDate", "value": "2025-12-03", "type": "string" }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Generar timestamp para variables por defecto",
+          "pm.collectionVariables.set('timestamp', Date.now());"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Mantener headers comunes si se necesita"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [ {"key":"Content-Type","value":"application/json"} ],
+            "url": { "raw": "{{base_url}}/auth/register", "host": ["{{base_url}}"], "path": ["auth","register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{username}}\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\",\n  \"confirmPassword\": \"{{password}}\",\n  \"firstName\": \"Test\",\n  \"lastName\": \"User\",\n  \"phone\": \"+573001112233\",\n  \"country\": \"CO\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var json = {};",
+                  "try { json = pm.response.json(); } catch(e) {}",
+                  "if (json && json.accessToken) {",
+                  "  pm.collectionVariables.set('access_token', json.accessToken);",
+                  "}",
+                  "if (json && json.refreshToken) {",
+                  "  pm.collectionVariables.set('refresh_token', json.refreshToken);",
+                  "}",
+                  "if (json && json.user) {",
+                  "  pm.collectionVariables.set('userId', json.user.id || '');",
+                  "  pm.collectionVariables.set('username', json.user.username || pm.collectionVariables.get('username'));",
+                  "}",
+                  "pm.test('Login responded 200', function(){ pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [ {"key":"Content-Type","value":"application/json"} ],
+            "url": { "raw": "{{base_url}}/auth/login", "host": ["{{base_url}}"], "path": ["auth","login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\",\n  \"rememberMe\": true\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [ {"key":"Authorization","value":"Bearer {{refresh_token}}"} ],
+            "url": { "raw": "{{base_url}}/auth/refresh", "host": ["{{base_url}}"], "path": ["auth","refresh"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {"type":"text/javascript","exec":[
+                "var json = {}; try { json = pm.response.json(); } catch(e) {},
+                "if (json && json.accessToken) pm.collectionVariables.set('access_token', json.accessToken);",
+                "if (json && json.refreshToken) pm.collectionVariables.set('refresh_token', json.refreshToken);"
+              ]}
+            }
+          ],
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "HU001 - Availability",
+      "item": [
+        {
+          "name": "Search Availability",
+          "request": {
+            "method": "POST",
+            "header": [ {"key":"Content-Type","value":"application/json"} ],
+            "url": { "raw": "{{base_url}}/availability/search", "host": ["{{base_url}}"], "path": ["availability","search"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"checkInDate\": \"{{checkInDate}}\",\n  \"checkOutDate\": \"{{checkOutDate}}\",\n  \"adults\": 2,\n  \"children\": 0,\n  \"roomType\": \"STANDARD\",\n  \"priceRange\": \"MEDIUM\",\n  \"amenities\": [\"WIFI\", \"TV\"],\n  \"accessibilityRequired\": false\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "HU004 - Reservations",
+      "item": [
+        {
+          "name": "Create Reservation",
+          "event": [
+            { "listen": "test", "script": { "type":"text/javascript", "exec": [
+              "var json = {}; try { json = pm.response.json(); } catch(e) {}",
+              "if (json && json.id) pm.collectionVariables.set('reservationId', json.id);",
+              "if (json && json.confirmationNumber) pm.collectionVariables.set('confirmationNumber', json.confirmationNumber);",
+              "pm.test('Reservation created', function(){ pm.response.to.have.status(201); });"
+            ] } }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [ {"key":"Content-Type","value":"application/json"} ],
+            "url": { "raw": "{{base_url}}/reservations", "host": ["{{base_url}}"], "path": ["reservations"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roomId\": \"{{roomId}}\",\n  \"checkInDate\": \"{{checkInDate}}\",\n  \"checkOutDate\": \"{{checkOutDate}}\",\n  \"adults\": 2,\n  \"children\": 0,\n  \"specialRequests\": \"Cerca al ascensor\",\n  \"paymentMethod\": \"CREDIT_CARD\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Reservation by ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/reservations/{{reservationId}}", "host": ["{{base_url}}"], "path": ["reservations","{{reservationId}}"] }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Reservation by Confirmation",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/reservations/confirmation/{{confirmationNumber}}", "host": ["{{base_url}}"], "path": ["reservations","confirmation","{{confirmationNumber}}"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "HU009 - Check-in",
+      "item": [
+        {
+          "name": "Process Check-in",
+          "request": {
+            "method": "POST",
+            "header": [ {"key":"Content-Type","value":"application/json"} ],
+            "url": { "raw": "{{base_url}}/checkin/process", "host": ["{{base_url}}"], "path": ["checkin","process"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reservationId\": \"{{reservationId}}\",\n  \"documentType\": \"NATIONAL_ID\",\n  \"documentNumber\": \"12345678\",\n  \"documentCountry\": \"CO\",\n  \"emergencyContactName\": \"Juan Perez\",\n  \"emergencyContactPhone\": \"+573001112233\",\n  \"vehicleInfo\": \"ABC123\",\n  \"additionalServices\": [\"BREAKFAST\"],\n  \"termsAccepted\": true,\n  \"notes\": \"Llega a las 3PM\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Today's Check-ins",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/checkin/today", "host": ["{{base_url}}"], "path": ["checkin","today"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "HU010 - Check-out",
+      "item": [
+        {
+          "name": "Process Check-out",
+          "request": {
+            "method": "POST",
+            "header": [ {"key":"Content-Type","value":"application/json"} ],
+            "url": { "raw": "{{base_url}}/checkout/process", "host": ["{{base_url}}"], "path": ["checkout","process"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reservationId\": \"{{reservationId}}\",\n  \"guestRating\": 5,\n  \"guestFeedback\": \"Excelente estadía\",\n  \"roomCondition\": \"GOOD\",\n  \"keyCardsReturned\": true,\n  \"additionalCharges\": [\n    {\n      \"description\": \"Minibar\",\n      \"type\": \"MINIBAR\",\n      \"quantity\": 2,\n      \"unitPrice\": 10000,\n      \"taxRate\": 19\n    }\n  ],\n  \"notes\": \"Checkout 11:30am\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Today's Check-outs",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/checkout/today", "host": ["{{base_url}}"], "path": ["checkout","today"] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin (opcional)",
+      "item": [
+        {
+          "name": "Create Room (ADMIN)",
+          "request": {
+            "method": "POST",
+            "header": [ {"key":"Content-Type","value":"application/json"} ],
+            "url": { "raw": "{{base_url}}/admin/rooms", "host": ["{{base_url}}"], "path": ["admin","rooms"] },
+            "body": { "mode": "raw", "raw": "{\n  \"roomNumber\": \"101\",\n  \"roomType\": \"STANDARD\",\n  \"capacity\": 2,\n  \"bedType\": \"QUEEN\",\n  \"basePrice\": 200000,\n  \"amenities\": [\"WIFI\", \"TV\"]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Rooms (ADMIN)",
+          "request": { "method": "GET", "url": { "raw": "{{base_url}}/admin/rooms", "host": ["{{base_url}}"], "path": ["admin","rooms"] } },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
