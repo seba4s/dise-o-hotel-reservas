@@ -20,3 +20,13 @@ management:
     web:
       exposure:
         include: health, info
+
+# JWT Configuration
+jwt:
+  secret: hotelReservationSecretKey2025VerySecureAndLongKeyForProductionUseChangeThis
+  expiration: 86400000        # 24 hours in milliseconds
+  refresh-expiration: 604800000  # 7 days in milliseconds
+  token-prefix: Bearer 
+  header-string: Authorization
+  issuer: hotel-reservation-system
+  audience: hotel-users
