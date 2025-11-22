@@ -55,7 +55,6 @@ com/hotel/reservation/model/Reservation$CheckOutDetails$CheckOutDetailsBuilder.c
 com/hotel/reservation/dto/response/CheckInResponseDto$ParkingDto$ParkingDtoBuilder.class
 com/hotel/reservation/dto/response/CheckOutResponseDto$StaySummaryDto$StaySummaryDtoBuilder.class
 com/hotel/reservation/dto/response/CheckOutResponseDto$AdditionalChargeDto.class
-RoomService.class
 com/hotel/reservation/config/SecurityConfig.class
 com/hotel/reservation/model/Reservation$ReservationStatus.class
 com/hotel/reservation/dto/response/CheckInResponseDto$KeyCardDto.class
@@ -79,6 +78,7 @@ com/hotel/reservation/model/Reservation$CancellationPolicy.class
 com/hotel/reservation/dto/response/CheckOutResponseDto$LostItemDto.class
 com/hotel/reservation/util/JwtUtil.class
 com/hotel/reservation/dto/response/ReservationResponseDto$AdditionalChargeDto.class
+com/hotel/reservation/service/RoomService.class
 com/hotel/reservation/dto/response/CheckOutResponseDto$RoomDto.class
 com/hotel/reservation/util/PasswordUtil$PasswordStrength.class
 com/hotel/reservation/model/Reservation$GuestPreferences$GuestPreferencesBuilder.class
