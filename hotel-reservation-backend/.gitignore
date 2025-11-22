@@ -1,4 +1,3 @@
----
 target/
 *.log
 *.iml
@@ -18,4 +17,3 @@ logs/
 
 # JWT secrets (if any local override)
 secret-
----
