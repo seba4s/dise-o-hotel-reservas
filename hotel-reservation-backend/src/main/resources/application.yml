@@ -1,15 +1,22 @@
-server:
-  port: 8080
-
 spring:
   application:
     name: hotel-reservation-backend
   data:
     mongodb:
-      uri: mongodb+srv://jlopezbenavides73_db_user:2945SebAs@cluster0.yapzpyl.mongodb.net/?appName=Cluster0
-      database: hotel-db
+      uri: mongodb://localhost:27017/hotel_reservations
+      database: hotel_reservations
+
+server:
+  port: 8080
 
 logging:
   level:
     root: INFO
+    org.springframework.web: INFO
     com.hotel.reservation: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
