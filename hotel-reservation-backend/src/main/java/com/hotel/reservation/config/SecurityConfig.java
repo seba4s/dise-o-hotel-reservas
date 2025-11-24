@@ -73,8 +73,8 @@ public class SecurityConfig {
                 // Public endpoints
                 .requestMatchers("/").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/health").permitAll()
-                .requestMatchers("/health").permitAll()
+                .requestMatchers("/api/health").permitAll()  // Custom health endpoint
+                .requestMatchers("/health").permitAll()       // Spring Actuator health endpoint
                 .requestMatchers("/v3/api-docs/**").permitAll()
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/swagger-ui.html").permitAll()
