@@ -18,10 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 @Tag(name = "Authentication", description = "Authentication management APIs")
-@CrossOrigin(origins = "*", maxAge = 3600)
 public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);

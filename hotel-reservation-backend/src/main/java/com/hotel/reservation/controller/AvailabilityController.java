@@ -20,10 +20,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/availability")
+@RequestMapping("/api/availability")
 @RequiredArgsConstructor
-@Tag(name = "Room Availability", description = "Room availability search APIs - HU001")
-@CrossOrigin(origins = "*", maxAge = 3600)
+@Tag(name = "Room Availability", description = "Room availability management APIs")
 public class AvailabilityController {
 
     private static final Logger logger = LoggerFactory.getLogger(AvailabilityController.class);

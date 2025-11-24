@@ -31,11 +31,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/checkin")
+@RequestMapping("/api/checkin")
 @RequiredArgsConstructor
 @Tag(name = "Check-In", description = "Check-in management APIs - HU009")
 @SecurityRequirement(name = "Bearer Authentication")
-@CrossOrigin(origins = "*", maxAge = 3600)
 public class CheckInController {
 
     private static final Logger logger = LoggerFactory.getLogger(CheckInController.class);

@@ -54,7 +54,7 @@
           "request": {
             "method": "POST",
             "header": [ {"key":"Content-Type","value":"application/json"} ],
-            "url": { "raw": "{{base_url}}/auth/register", "host": ["{{base_url}}"], "path": ["auth","register"] },
+            "url": { "raw": "{{base_url}}/api/auth/register", "host": ["{{base_url}}"], "path": ["api","auth","register"] },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"username\": \"{{username}}\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\",\n  \"confirmPassword\": \"{{password}}\",\n  \"firstName\": \"Test\",\n  \"lastName\": \"User\",\n  \"phone\": \"+573001112233\",\n  \"country\": \"CO\"\n}"
@@ -73,14 +73,14 @@
                   "var json = {};",
                   "try { json = pm.response.json(); } catch(e) {}",
                   "if (json && json.accessToken) {",
-                  "  pm.collectionVariables.set('access_token', json.accessToken);",
+                  "  pm.environment.set('client_token', json.accessToken);",
                   "}",
                   "if (json && json.refreshToken) {",
-                  "  pm.collectionVariables.set('refresh_token', json.refreshToken);",
+                  "  pm.environment.set('refresh_token', json.refreshToken);",
                   "}",
                   "if (json && json.user) {",
-                  "  pm.collectionVariables.set('userId', json.user.id || '');",
-                  "  pm.collectionVariables.set('username', json.user.username || pm.collectionVariables.get('username'));",
+                  "  pm.environment.set('client_user_id', json.user.id || '');",
+                  "  pm.environment.set('username', json.user.username || pm.environment.get('username'));",
                   "}",
                   "pm.test('Login responded 200', function(){ pm.response.to.have.status(200); });"
                 ]
@@ -90,7 +90,7 @@
           "request": {
             "method": "POST",
             "header": [ {"key":"Content-Type","value":"application/json"} ],
-            "url": { "raw": "{{base_url}}/auth/login", "host": ["{{base_url}}"], "path": ["auth","login"] },
+            "url": { "raw": "{{base_url}}/api/auth/login", "host": ["{{base_url}}"], "path": ["api","auth","login"] },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\",\n  \"rememberMe\": true\n}"
@@ -103,7 +103,7 @@
           "request": {
             "method": "POST",
             "header": [ {"key":"Authorization","value":"Bearer {{refresh_token}}"} ],
-            "url": { "raw": "{{base_url}}/auth/refresh", "host": ["{{base_url}}"], "path": ["auth","refresh"] }
+            "url": { "raw": "{{base_url}}/api/auth/refresh", "host": ["{{base_url}}"], "path": ["api","auth","refresh"] }
           },
           "event": [
             {
@@ -127,12 +127,29 @@
           "request": {
             "method": "POST",
             "header": [ {"key":"Content-Type","value":"application/json"} ],
-            "url": { "raw": "{{base_url}}/availability/search", "host": ["{{base_url}}"], "path": ["availability","search"] },
+            "url": { "raw": "{{base_url}}/api/availability/search", "host": ["{{base_url}}"], "path": ["api","availability","search"] },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"checkInDate\": \"{{checkInDate}}\",\n  \"checkOutDate\": \"{{checkOutDate}}\",\n  \"adults\": 2,\n  \"children\": 0,\n  \"roomType\": \"STANDARD\",\n  \"priceRange\": \"MEDIUM\",\n  \"amenities\": [\"WIFI\", \"TV\"],\n  \"accessibilityRequired\": false\n}"
             }
           },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var json = {};",
+                  "try { json = pm.response.json(); } catch(e) {}",
+                  "if (Array.isArray(json) && json.length > 0) {",
+                  "  var first = json[0];",
+                  "  var id = first.id || first.roomId || first._id;",
+                  "  if (id) { pm.collectionVariables.set('roomId', id); pm.collectionVariables.set('roomNumber', first.roomNumber || ''); pm.test('roomId saved', function(){ pm.expect(id).to.not.be.undefined; }); }",
+                  "} else { pm.collectionVariables.unset('roomId'); pm.test('no availability results', function(){ pm.expect(json).to.be.an('array'); }); }"
+                ]
+              }
+            }
+          ],
           "response": []
         }
       ]
@@ -153,7 +170,8 @@
           "request": {
             "method": "POST",
             "header": [ {"key":"Content-Type","value":"application/json"} ],
-            "url": { "raw": "{{base_url}}/reservations", "host": ["{{base_url}}"], "path": ["reservations"] },
+            "auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{client_token}}", "type": "string" } ] },
+            "url": { "raw": "{{base_url}}/api/reservations", "host": ["{{base_url}}"], "path": ["api","reservations"] },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"roomId\": \"{{roomId}}\",\n  \"checkInDate\": \"{{checkInDate}}\",\n  \"checkOutDate\": \"{{checkOutDate}}\",\n  \"adults\": 2,\n  \"children\": 0,\n  \"specialRequests\": \"Cerca al ascensor\",\n  \"paymentMethod\": \"CREDIT_CARD\"\n}"
@@ -165,7 +183,8 @@
           "name": "Get Reservation by ID",
           "request": {
             "method": "GET",
-            "url": { "raw": "{{base_url}}/reservations/{{reservationId}}", "host": ["{{base_url}}"], "path": ["reservations","{{reservationId}}"] }
+            "auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{client_token}}", "type": "string" } ] },
+            "url": { "raw": "{{base_url}}/api/reservations/{{reservationId}}", "host": ["{{base_url}}"], "path": ["api","reservations","{{reservationId}}"] }
           },
           "response": []
         },
@@ -173,7 +192,8 @@
           "name": "Get Reservation by Confirmation",
           "request": {
             "method": "GET",
-            "url": { "raw": "{{base_url}}/reservations/confirmation/{{confirmationNumber}}", "host": ["{{base_url}}"], "path": ["reservations","confirmation","{{confirmationNumber}}"] }
+            "auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{client_token}}", "type": "string" } ] },
+            "url": { "raw": "{{base_url}}/api/reservations/confirmation/{{confirmationNumber}}", "host": ["{{base_url}}"], "path": ["api","reservations","confirmation","{{confirmationNumber}}"] }
           },
           "response": []
         }
@@ -187,7 +207,8 @@
           "request": {
             "method": "POST",
             "header": [ {"key":"Content-Type","value":"application/json"} ],
-            "url": { "raw": "{{base_url}}/checkin/process", "host": ["{{base_url}}"], "path": ["checkin","process"] },
+            "auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{staff_token}}", "type": "string" } ] },
+            "url": { "raw": "{{base_url}}/api/checkin/process", "host": ["{{base_url}}"], "path": ["api","checkin","process"] },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"reservationId\": \"{{reservationId}}\",\n  \"documentType\": \"NATIONAL_ID\",\n  \"documentNumber\": \"12345678\",\n  \"documentCountry\": \"CO\",\n  \"emergencyContactName\": \"Juan Perez\",\n  \"emergencyContactPhone\": \"+573001112233\",\n  \"vehicleInfo\": \"ABC123\",\n  \"additionalServices\": [\"BREAKFAST\"],\n  \"termsAccepted\": true,\n  \"notes\": \"Llega a las 3PM\"\n}"
@@ -199,7 +220,8 @@
           "name": "Today's Check-ins",
           "request": {
             "method": "GET",
-            "url": { "raw": "{{base_url}}/checkin/today", "host": ["{{base_url}}"], "path": ["checkin","today"] }
+            "auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{staff_token}}", "type": "string" } ] },
+            "url": { "raw": "{{base_url}}/api/checkin/today", "host": ["{{base_url}}"], "path": ["api","checkin","today"] }
           },
           "response": []
         }
@@ -213,7 +235,8 @@
           "request": {
             "method": "POST",
             "header": [ {"key":"Content-Type","value":"application/json"} ],
-            "url": { "raw": "{{base_url}}/checkout/process", "host": ["{{base_url}}"], "path": ["checkout","process"] },
+            "auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{staff_token}}", "type": "string" } ] },
+            "url": { "raw": "{{base_url}}/api/checkout/process", "host": ["{{base_url}}"], "path": ["api","checkout","process"] },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"reservationId\": \"{{reservationId}}\",\n  \"guestRating\": 5,\n  \"guestFeedback\": \"Excelente estadía\",\n  \"roomCondition\": \"GOOD\",\n  \"keyCardsReturned\": true,\n  \"additionalCharges\": [\n    {\n      \"description\": \"Minibar\",\n      \"type\": \"MINIBAR\",\n      \"quantity\": 2,\n      \"unitPrice\": 10000,\n      \"taxRate\": 19\n    }\n  ],\n  \"notes\": \"Checkout 11:30am\"\n}"
@@ -225,7 +248,8 @@
           "name": "Today's Check-outs",
           "request": {
             "method": "GET",
-            "url": { "raw": "{{base_url}}/checkout/today", "host": ["{{base_url}}"], "path": ["checkout","today"] }
+            "auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{staff_token}}", "type": "string" } ] },
+            "url": { "raw": "{{base_url}}/api/checkout/today", "host": ["{{base_url}}"], "path": ["api","checkout","today"] }
           },
           "response": []
         }
@@ -239,7 +263,8 @@
           "request": {
             "method": "POST",
             "header": [ {"key":"Content-Type","value":"application/json"} ],
-            "url": { "raw": "{{base_url}}/admin/rooms", "host": ["{{base_url}}"], "path": ["admin","rooms"] },
+            "auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{staff_token}}", "type": "string" } ] },
+            "url": { "raw": "{{base_url}}/api/admin/rooms", "host": ["{{base_url}}"], "path": ["api","admin","rooms"] },
             "body": { "mode": "raw", "raw": "{\n  \"roomNumber\": \"101\",\n  \"roomType\": \"STANDARD\",\n  \"capacity\": 2,\n  \"bedType\": \"QUEEN\",\n  \"basePrice\": 200000,\n  \"amenities\": [\"WIFI\", \"TV\"]\n}"
             }
           },
@@ -247,7 +272,7 @@
         },
         {
           "name": "List Rooms (ADMIN)",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/admin/rooms", "host": ["{{base_url}}"], "path": ["admin","rooms"] } },
+          "request": { "method": "GET", "auth": { "type": "bearer", "bearer": [ { "key": "token", "value": "{{staff_token}}", "type": "string" } ] }, "url": { "raw": "{{base_url}}/api/admin/rooms", "host": ["{{base_url}}"], "path": ["api","admin","rooms"] } },
           "response": []
         }
       ]

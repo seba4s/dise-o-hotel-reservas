@@ -24,11 +24,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/checkout")
+@RequestMapping("/api/checkout")
 @RequiredArgsConstructor
 @Tag(name = "Check-Out", description = "Check-out management APIs - HU010")
 @SecurityRequirement(name = "Bearer Authentication")
-@CrossOrigin(origins = "*", maxAge = 3600)
 public class CheckOutController {
 
     private static final Logger logger = LoggerFactory.getLogger(CheckOutController.class);

@@ -23,7 +23,7 @@ management:
 
 # JWT Configuration
 jwt:
-  secret: hotelReservationSecretKey2025VerySecureAndLongKeyForProductionUseChangeThis
+  secret: 5e9c2d4f8f7a0c6e3b19a7d4c1f2aa3b7e6d9c8f0b4a2d1e5f6c7b8a9d0e1f23a4b5c6d7e8f90123456789abcdeffed
   expiration: 86400000        # 24 hours in milliseconds
   refresh-expiration: 604800000  # 7 days in milliseconds
   token-prefix: Bearer 

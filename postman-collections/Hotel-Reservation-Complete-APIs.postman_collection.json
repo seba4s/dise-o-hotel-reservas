@@ -1,0 +1,835 @@
+{
+	"info": {
+		"_postman_id": "hotel-reservation-apis-2025",
+		"name": "Hotel Reservation - Complete APIs",
+		"description": "Complete collection for testing all Hotel Reservation System APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register Client User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.accessToken) {",
+									"        pm.environment.set(\"client_token\", jsonData.accessToken);",
+									"        pm.environment.set(\"client_user_id\", jsonData.user ? jsonData.user.id : '');",
+									"        console.log(\"Client token saved:\", jsonData.accessToken);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"client@example.com\",\n  \"password\": \"Password123!\",\n  \"confirmPassword\": \"Password123!\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"username\": \"johndoe\",\n  \"phone\": \"+1234567890\",\n  \"country\": \"US\",\n  \"role\": \"CLIENT\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Staff User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.accessToken) {",
+									"        pm.environment.set(\"staff_token\", jsonData.accessToken);",
+									"        pm.environment.set(\"staff_user_id\", jsonData.user ? jsonData.user.id : '');",
+									"        console.log(\"Staff token saved:\", jsonData.accessToken);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"staff@hotel.com\",\n  \"password\": \"Password123!\",\n  \"confirmPassword\": \"Password123!\",\n  \"firstName\": \"Hotel\",\n  \"lastName\": \"Staff\",\n  \"username\": \"hotelstaff\",\n  \"phone\": \"+1234567890\",\n  \"country\": \"US\",\n  \"role\": \"STAFF\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Client",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.accessToken) {",
+									"        pm.environment.set(\"client_token\", jsonData.accessToken);",
+									"        console.log(\"Client token updated:\", jsonData.accessToken);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"johndoe\",\n  \"password\": \"Password123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Staff",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.accessToken) {",
+									"        pm.environment.set(\"staff_token\", jsonData.accessToken);",
+									"        console.log(\"Staff token updated:\", jsonData.accessToken);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"hotelstaff\",\n  \"password\": \"Password123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Availability",
+			"item": [
+				{
+					"name": "Check Availability - Single Room",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = {};",
+									"try { json = pm.response.json(); } catch(e) {}",
+									"if (Array.isArray(json) && json.length > 0) {",
+									"  var first = json[0];",
+									"  var id = first.id || first.roomId || first._id;",
+									"  if (id) { pm.environment.set('roomId', id); pm.environment.set('roomNumber', first.roomNumber || ''); pm.test('roomId saved', function(){ pm.expect(id).to.not.be.undefined; }); }",
+									"} else { pm.environment.unset('roomId'); pm.test('no availability results', function(){ pm.expect(json).to.be.an('array'); }); }"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/availability/quick-search?checkInDate=2025-12-01&checkOutDate=2025-12-05&roomType=STANDARD&adults=1&children=0",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"availability",
+								"quick-search"
+							],
+							"query": [
+								{
+									"key": "checkInDate",
+									"value": "2025-12-01"
+								},
+								{
+									"key": "checkOutDate",
+									"value": "2025-12-05"
+								},
+								{
+									"key": "roomType",
+									"value": "STANDARD"
+								},
+								{
+									"key": "adults",
+									"value": "1"
+								},
+								{
+									"key": "children",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check Availability - Double Room",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = {};",
+									"try { json = pm.response.json(); } catch(e) {}",
+									"if (Array.isArray(json) && json.length > 0) {",
+									"  var first = json[0];",
+									"  var id = first.id || first.roomId || first._id;",
+									"  if (id) { pm.environment.set('roomId', id); pm.environment.set('roomNumber', first.roomNumber || ''); pm.test('roomId saved', function(){ pm.expect(id).to.not.be.undefined; }); }",
+									"} else { pm.environment.unset('roomId'); pm.test('no availability results', function(){ pm.expect(json).to.be.an('array'); }); }"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/availability/quick-search?checkInDate=2025-12-10&checkOutDate=2025-12-15&roomType=DOUBLE&adults=2&children=0",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"availability",
+								"quick-search"
+							],
+							"query": [
+								{
+									"key": "checkInDate",
+									"value": "2025-12-10"
+								},
+								{
+									"key": "checkOutDate",
+									"value": "2025-12-15"
+								},
+								{
+									"key": "roomType",
+									"value": "DOUBLE"
+								},
+								{
+									"key": "adults",
+									"value": "2"
+								},
+								{
+									"key": "children",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Check Availability - Suite",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = {};",
+									"try { json = pm.response.json(); } catch(e) {}",
+									"if (Array.isArray(json) && json.length > 0) {",
+									"  var first = json[0];",
+									"  var id = first.id || first.roomId || first._id;",
+									"  if (id) { pm.environment.set('roomId', id); pm.environment.set('roomNumber', first.roomNumber || ''); pm.test('roomId saved', function(){ pm.expect(id).to.not.be.undefined; }); }",
+									"} else { pm.environment.unset('roomId'); pm.test('no availability results', function(){ pm.expect(json).to.be.an('array'); }); }"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/availability/quick-search?checkInDate=2025-12-20&checkOutDate=2025-12-25&roomType=SUITE&adults=4&children=0",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"availability",
+								"quick-search"
+							],
+							"query": [
+								{
+									"key": "checkInDate",
+									"value": "2025-12-20"
+								},
+								{
+									"key": "checkOutDate",
+									"value": "2025-12-25"
+								},
+								{
+									"key": "roomType",
+									"value": "SUITE"
+								},
+								{
+									"key": "adults",
+									"value": "4"
+								},
+								{
+									"key": "children",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reservations",
+			"item": [
+				{
+					"name": "Create Reservation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.id) {",
+									"        pm.environment.set(\"reservation_id\", jsonData.id);",
+									"        console.log(\"Reservation ID saved:\", jsonData.id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{client_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"roomId\": \"{{roomId}}\",\n  \"checkInDate\": \"2025-12-01\",\n  \"checkOutDate\": \"2025-12-05\",\n  \"adults\": 2,\n  \"children\": 0,\n  \"specialRequests\": \"Vista al mar, cama king size\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/reservations",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reservations"
+							]
+						},
+						"description": "Note: Replace ROOM_ID_HERE with an actual room ID from availability check"
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Reservations",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{client_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/reservations/my-reservations",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reservations",
+								"my-reservations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Reservation by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{client_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/reservations/{{reservation_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reservations",
+								"{{reservation_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Reservation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{client_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"checkInDate\": \"2025-12-02\",\n  \"checkOutDate\": \"2025-12-06\",\n  \"adults\": 3,\n  \"children\": 0,\n  \"specialRequests\": \"Vista al mar, cama king size, late checkout\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/reservations/{{reservation_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reservations",
+								"{{reservation_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Reservation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{client_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/reservations/{{reservation_id}}/cancel",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reservations",
+								"{{reservation_id}}",
+								"cancel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Reservations (Staff)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{staff_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/reservations?page=0&size=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reservations"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Check-In",
+			"item": [
+				{
+					"name": "Process Check-In",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{staff_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"reservationId\": \"{{reservation_id}}\",\n  \"identificationNumber\": \"ABC123456\",\n  \"notes\": \"Early check-in approved\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/checkin/process",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"checkin",
+								"process"
+							]
+						},
+						"description": "Staff/Admin only - Process check-in for a reservation"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Check-In by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{staff_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/checkin/{{reservation_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"checkin",
+								"{{reservation_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Today's Check-Ins",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{staff_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/checkin/today",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"checkin",
+								"today"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Check-Out",
+			"item": [
+				{
+					"name": "Process Check-Out",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{staff_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"reservationId\": \"{{reservation_id}}\",\n  \"paymentMethod\": \"CREDIT_CARD\",\n  \"notes\": \"Late checkout - extra charge applied\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/checkout/process",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"checkout",
+								"process"
+							]
+						},
+						"description": "Staff/Admin only - Process check-out for a reservation"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Check-Out by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{staff_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/checkout/{{reservation_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"checkout",
+								"{{reservation_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Today's Check-Outs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{staff_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/checkout/today",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"checkout",
+								"today"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Health Check",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"health"
+							]
+						},
+						"description": "Check if the server is running"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}

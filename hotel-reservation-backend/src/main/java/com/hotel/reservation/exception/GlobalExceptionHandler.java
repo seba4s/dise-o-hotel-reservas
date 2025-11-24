@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -37,7 +36,7 @@ public class GlobalExceptionHandler {
         log.warn("Resource not found: {} at {}", ex.getMessage(), request.getRequestURI());
         
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
+                .timestamp(System.currentTimeMillis())
                 .status(HttpStatus.NOT_FOUND.value())
                 .error("Resource Not Found")
                 .message(ex.getMessage())
@@ -54,7 +53,7 @@ public class GlobalExceptionHandler {
         log.warn("Bad request: {} at {}", ex.getMessage(), request.getRequestURI());
         
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
+                .timestamp(System.currentTimeMillis())
                 .status(HttpStatus.BAD_REQUEST.value())
                 .error("Bad Request")
                 .message(ex.getMessage())
@@ -72,7 +71,7 @@ public class GlobalExceptionHandler {
         log.warn("Conflict: {} at {}", ex.getMessage(), request.getRequestURI());
         
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
+                .timestamp(System.currentTimeMillis())
                 .status(HttpStatus.CONFLICT.value())
                 .error("Conflict")
                 .message(ex.getMessage())
@@ -90,7 +89,7 @@ public class GlobalExceptionHandler {
         log.warn("Unauthorized access: {} at {}", ex.getMessage(), request.getRequestURI());
         
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
+                .timestamp(System.currentTimeMillis())
                 .status(HttpStatus.UNAUTHORIZED.value())
                 .error("Unauthorized")
                 .message(ex.getMessage())
@@ -107,7 +106,7 @@ public class GlobalExceptionHandler {
         log.warn("Forbidden access: {} at {}", ex.getMessage(), request.getRequestURI());
         
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
+                .timestamp(System.currentTimeMillis())
                 .status(HttpStatus.FORBIDDEN.value())
                 .error("Forbidden")
                 .message(ex.getMessage())
@@ -124,7 +123,7 @@ public class GlobalExceptionHandler {
         log.warn("Room not available: {} at {}", ex.getMessage(), request.getRequestURI());
         
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
+                .timestamp(System.currentTimeMillis())
                 .status(HttpStatus.CONFLICT.value())
                 .error("Room Not Available")
                 .message(ex.getMessage())
@@ -145,7 +144,7 @@ public class GlobalExceptionHandler {
         log.warn("Invalid reservation state: {} at {}", ex.getMessage(), request.getRequestURI());
         
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
+                .timestamp(System.currentTimeMillis())
                 .status(HttpStatus.CONFLICT.value())
                 .error("Invalid Reservation State")
                 .message(ex.getMessage())
@@ -177,7 +176,7 @@ public class GlobalExceptionHandler {
         });
 
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
+                .timestamp(System.currentTimeMillis())
                 .status(HttpStatus.BAD_REQUEST.value())
                 .error("Validation Failed")
                 .message("Request validation failed")
@@ -205,7 +204,7 @@ public class GlobalExceptionHandler {
         });
 
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
+                .timestamp(System.currentTimeMillis())
                 .status(HttpStatus.BAD_REQUEST.value())
                 .error("Binding Failed")
                 .message("Request binding failed")
@@ -234,7 +233,7 @@ public class GlobalExceptionHandler {
                 ));
 
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
+                .timestamp(System.currentTimeMillis())
                 .status(HttpStatus.BAD_REQUEST.value())
                 .error("Constraint Violation")
                 .message("Constraint validation failed")
@@ -255,7 +254,7 @@ public class GlobalExceptionHandler {
         log.warn("Bad credentials attempt at {}: {}", request.getRequestURI(), ex.getMessage());
         
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
+                .timestamp(System.currentTimeMillis())
                 .status(HttpStatus.UNAUTHORIZED.value())
                 .error("Authentication Failed")
                 .message("Invalid username or password")
@@ -272,7 +271,7 @@ public class GlobalExceptionHandler {
         log.warn("Disabled account attempt at {}: {}", request.getRequestURI(), ex.getMessage());
         
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
+                .timestamp(System.currentTimeMillis())
                 .status(HttpStatus.UNAUTHORIZED.value())
                 .error("Account Disabled")
                 .message("Your account has been disabled")
@@ -289,7 +288,7 @@ public class GlobalExceptionHandler {
         log.warn("Locked account attempt at {}: {}", request.getRequestURI(), ex.getMessage());
         
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
+                .timestamp(System.currentTimeMillis())
                 .status(HttpStatus.UNAUTHORIZED.value())
                 .error("Account Locked")
                 .message("Your account has been locked")
@@ -306,7 +305,7 @@ public class GlobalExceptionHandler {
         log.warn("Access denied at {}: {}", request.getRequestURI(), ex.getMessage());
         
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
+                .timestamp(System.currentTimeMillis())
                 .status(HttpStatus.FORBIDDEN.value())
                 .error("Access Denied")
                 .message("You don't have permission to access this resource")
@@ -329,7 +328,7 @@ public class GlobalExceptionHandler {
                 ex.getValue(), ex.getName(), ex.getRequiredType().getSimpleName());
 
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
+                .timestamp(System.currentTimeMillis())
                 .status(HttpStatus.BAD_REQUEST.value())
                 .error("Invalid Parameter")
                 .message(message)
@@ -349,7 +348,7 @@ public class GlobalExceptionHandler {
         log.warn("No handler found for {} {}", ex.getHttpMethod(), ex.getRequestURL());
         
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
+                .timestamp(System.currentTimeMillis())
                 .status(HttpStatus.NOT_FOUND.value())
                 .error("Endpoint Not Found")
                 .message(String.format("No endpoint %s %s", ex.getHttpMethod(), ex.getRequestURL()))
@@ -369,7 +368,7 @@ public class GlobalExceptionHandler {
         log.error("Unexpected error at {}: {}", request.getRequestURI(), ex.getMessage(), ex);
         
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
+                .timestamp(System.currentTimeMillis())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .error("Internal Server Error")
                 .message("An unexpected error occurred. Please try again later.")
@@ -388,7 +387,7 @@ public class GlobalExceptionHandler {
     @lombok.NoArgsConstructor
     @lombok.AllArgsConstructor
     public static class ErrorResponse {
-        private LocalDateTime timestamp;
+        private Long timestamp;
         private Integer status;
         private String error;
         private String message;

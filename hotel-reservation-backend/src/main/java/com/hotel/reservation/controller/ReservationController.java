@@ -22,11 +22,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/reservations")
+@RequestMapping("/api/reservations")
 @RequiredArgsConstructor
-@Tag(name = "Reservations", description = "Reservation management APIs - HU004")
+@Tag(name = "Reservation", description = "Reservation management APIs - HU001, HU002, HU003, HU004, HU005")
 @SecurityRequirement(name = "Bearer Authentication")
-@CrossOrigin(origins = "*", maxAge = 3600)
 public class ReservationController {
 
     private static final Logger logger = LoggerFactory.getLogger(ReservationController.class);

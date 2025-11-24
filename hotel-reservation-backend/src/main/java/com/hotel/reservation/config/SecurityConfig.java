@@ -71,20 +71,23 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints
-                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/health").permitAll()
+                .requestMatchers("/api/health").permitAll()
                 .requestMatchers("/actuator/health").permitAll()
                 .requestMatchers("/v3/api-docs/**").permitAll()
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/swagger-ui.html").permitAll()
-                .requestMatchers("/availability/**").permitAll()
+                .requestMatchers("/swagger-resources/**").permitAll()
+                .requestMatchers("/webjars/**").permitAll()
+                .requestMatchers("/api/availability/**").permitAll()
                 
                 // Protected endpoints - Check-in/Check-out require STAFF or ADMIN
-                .requestMatchers("/checkin/**").hasAnyRole("STAFF", "ADMIN")
-                .requestMatchers("/checkout/**").hasAnyRole("STAFF", "ADMIN")
+                .requestMatchers("/api/checkin/**").hasAnyRole("STAFF", "ADMIN")
+                .requestMatchers("/api/checkout/**").hasAnyRole("STAFF", "ADMIN")
                 
                 // Admin endpoints
-                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 
                 // All other requests require authentication
                 .anyRequest().authenticated()
