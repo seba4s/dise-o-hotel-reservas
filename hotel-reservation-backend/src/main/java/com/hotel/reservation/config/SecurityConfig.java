@@ -71,15 +71,13 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints
+                .requestMatchers("/").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/health").permitAll()
                 .requestMatchers("/api/health").permitAll()
-                .requestMatchers("/actuator/health").permitAll()
+                .requestMatchers("/health").permitAll()
                 .requestMatchers("/v3/api-docs/**").permitAll()
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/swagger-ui.html").permitAll()
-                .requestMatchers("/swagger-resources/**").permitAll()
-                .requestMatchers("/webjars/**").permitAll()
                 .requestMatchers("/api/availability/**").permitAll()
                 
                 // Protected endpoints - Check-in/Check-out require STAFF or ADMIN

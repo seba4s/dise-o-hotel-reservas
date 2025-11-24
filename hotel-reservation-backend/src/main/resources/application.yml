@@ -3,7 +3,10 @@ spring:
     name: hotel-reservation-backend
   data:
     mongodb:
-      uri: mongodb+srv://jlopezbenavides73_db_user:2945SebAs@cluster0.yapzpyl.mongodb.net/?appName=Cluster0
+      # Use environment variable MONGODB_URI for production
+      # Example: export MONGODB_URI="mongodb+srv://user:password@cluster.mongodb.net/database?options"
+      # Or provide via Kubernetes Secret
+      uri: ${MONGODB_URI:mongodb://localhost:27017/hotel_reservations}
       database: hotel_reservations
 
 server:
@@ -22,11 +25,13 @@ management:
         include: health, info
 
 # JWT Configuration
+# IMPORTANT: Secrets should be provided via environment variables or Kubernetes Secrets in production
+# JWT secret must be at least 64 characters for HS512 algorithm
 jwt:
-  secret: 5e9c2d4f8f7a0c6e3b19a7d4c1f2aa3b7e6d9c8f0b4a2d1e5f6c7b8a9d0e1f23a4b5c6d7e8f90123456789abcdeffed
+  secret: ${JWT_SECRET:CHANGE_ME_MIN_LENGTH_64_CHARS_REQUIRED_FOR_HS512_ALGORITHM_SECURITY}
   expiration: 86400000        # 24 hours in milliseconds
   refresh-expiration: 604800000  # 7 days in milliseconds
-  token-prefix: Bearer 
+  token-prefix: Bearer
   header-string: Authorization
   issuer: hotel-reservation-system
   audience: hotel-users
